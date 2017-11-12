@@ -1,9 +1,9 @@
 <?php
+
 namespace GoetasWebservices\Xsd\XsdToPhp\Php\Structure;
 
 class PHPClassOf extends PHPClass
 {
-
     /**
      * @var PHPArg
      */
@@ -14,8 +14,8 @@ class PHPClassOf extends PHPClass
      */
     public function __construct(PHPArg $arg)
     {
+        parent::__construct('array');
         $this->arg = $arg;
-        $this->name = 'array';
     }
 
     /**
@@ -23,7 +23,7 @@ class PHPClassOf extends PHPClass
      */
     public function __toString()
     {
-        return "array of " . $this->arg;
+        return 'array of ' . $this->arg->getName();
     }
 
     /**
@@ -34,4 +34,3 @@ class PHPClassOf extends PHPClass
         return $this->arg;
     }
 }
-

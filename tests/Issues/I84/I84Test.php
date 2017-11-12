@@ -1,4 +1,5 @@
 <?php
+
 namespace GoetasWebservices\Xsd\XsdToPhp\Tests\Issues\I63;
 
 use GoetasWebservices\Xsd\XsdToPhp\Naming\ShortNamingStrategy;
@@ -7,7 +8,6 @@ use GoetasWebservices\XML\XSDReader\SchemaReader;
 
 class I84Test extends \PHPUnit_Framework_TestCase
 {
-
     public function testNaming()
     {
         $reader = new SchemaReader();

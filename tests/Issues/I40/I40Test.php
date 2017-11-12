@@ -1,4 +1,5 @@
 <?php
+
 namespace GoetasWebservices\Xsd\XsdToPhp\Tests\Issues\I40;
 
 use GoetasWebservices\Xsd\XsdToPhp\Jms\YamlConverter;
@@ -10,16 +11,14 @@ use GoetasWebservices\XML\XSDReader\SchemaReader;
 
 class I40Test extends \PHPUnit_Framework_TestCase
 {
-
     public function testMissingClass()
     {
-
-        $expectedItems = array(
+        $expectedItems = [
             'Epa\\Schema\\AdditionalIdentifier',
             'Epa\\Schema\\AdditionalIdentifierType',
             'Epa\\Schema\\AdditionalIdentifierTypes',
             'Epa\\Schema\\AdditionalIdentifiers',
-        );
+        ];
         $expectedItems = array_combine($expectedItems, $expectedItems);
 
         $reader = new SchemaReader();

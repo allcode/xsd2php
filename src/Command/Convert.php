@@ -1,4 +1,5 @@
 <?php
+
 namespace GoetasWebservices\Xsd\XsdToPhp\Command;
 
 use Symfony\Component\Config\FileLocator;
@@ -25,24 +26,22 @@ class Convert extends Command
         parent::__construct();
     }
 
-    /**
-     *
-     * @see Console\Command\Command
-     */
     protected function configure()
     {
         $this->setName('convert');
-        $this->setDescription("Convert a XSD file into PHP classes and JMS serializer metadata files");
-        $this->setDefinition(array(
-            new InputArgument('config', InputArgument::REQUIRED, 'Where is located your XSD definitions'),
-            new InputArgument('src', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Where is located your XSD definitions'),
-        ));
+        $this->setDescription('Convert a XSD file into PHP classes and JMS serializer metadata files');
+        $this->addArgument(
+            'config',
+            InputArgument::REQUIRED,
+            'Where is located your XSD definitions'
+        );
+        $this->addArgument(
+            'src',
+            InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+            'Where is located your XSD definitions'
+        );
     }
 
-    /**
-     *
-     * @see Console\Command\Command
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->loadConfigurations($input->getArgument('config'));
@@ -61,6 +60,7 @@ class Convert extends Command
             $writer = $this->container->get('goetas_webservices.xsd2php.writer.' . $type);
             $writer->write($items);
         }
+
         return count($items) ? 0 : 255;
     }
 
@@ -70,10 +70,9 @@ class Convert extends Command
         $yaml = new YamlFileLoader($this->container, $locator);
         $xml = new XmlFileLoader($this->container, $locator);
 
-        $delegatingLoader = new DelegatingLoader(new LoaderResolver(array($yaml, $xml)));
+        $delegatingLoader = new DelegatingLoader(new LoaderResolver([$yaml, $xml]));
         $delegatingLoader->load($configFile);
 
         $this->container->compile();
-
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace GoetasWebservices\Xsd\XsdToPhp\Tests;
 
 use GoetasWebservices\Xsd\XsdToPhp\Jms\YamlConverter;
@@ -29,6 +30,7 @@ class Generator extends AbstractGenerator
         $converter = new PhpConverter($this->namingStrategy);
         $this->setNamespaces($converter);
         $items = $converter->convert($schemas);
+
         return $items;
     }
 
@@ -37,6 +39,7 @@ class Generator extends AbstractGenerator
         $converter = new YamlConverter($this->namingStrategy);
         $this->setNamespaces($converter);
         $items = $converter->convert($schemas);
+
         return $items;
     }
 }

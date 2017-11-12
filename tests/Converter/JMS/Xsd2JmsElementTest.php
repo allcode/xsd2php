@@ -1,9 +1,9 @@
 <?php
+
 namespace GoetasWebservices\Xsd\XsdToPhp\Tests\Converter\JMS;
 
-class Xsd2PhpElementTest extends Xsd2JmsBase
+class Xsd2JmsElementTest extends Xsd2JmsBase
 {
-
     /**
      * @dataProvider getPrimitiveTypeConversions
      */
@@ -20,24 +20,24 @@ class Xsd2PhpElementTest extends Xsd2JmsBase
         $this->assertCount(1, $classes);
 
         $this->assertEquals(
-            array(
-                'Example\ElementOne' => array(
+            [
+                'Example\ElementOne' => [
                     'xml_root_name' => 'ns-8ece61d2:element-one',
                     'xml_root_namespace' => 'http://www.example.com',
-                    'properties' => array(
-                        '__value' => array(
+                    'properties' => [
+                        '__value' => [
                             'expose' => true,
                             'xml_value' => true,
                             'access_type' => 'public_method',
-                            'accessor' => array(
+                            'accessor' => [
                                 'getter' => 'value',
-                                'setter' => 'value'
-                            ),
-                            'type' => $phpName
-                        )
-                    )
-                )
-            ), $classes['Example\ElementOne']);
+                                'setter' => 'value',
+                            ],
+                            'type' => $phpName,
+                        ],
+                    ],
+                ],
+            ], $classes['Example\ElementOne']);
     }
 
     /**
@@ -60,24 +60,24 @@ class Xsd2PhpElementTest extends Xsd2JmsBase
         $this->assertCount(1, $classes);
 
         $this->assertEquals(
-            array(
-                'Example\\ElementOne' => array(
+            [
+                'Example\\ElementOne' => [
                     'xml_root_name' => 'ns-8ece61d2:element-one',
                     'xml_root_namespace' => 'http://www.example.com',
-                    'properties' => array(
-                        '__value' => array(
+                    'properties' => [
+                        '__value' => [
                             'expose' => true,
                             'xml_value' => true,
                             'access_type' => 'public_method',
-                            'accessor' => array(
+                            'accessor' => [
                                 'getter' => 'value',
-                                'setter' => 'value'
-                            ),
-                            'type' => $phpName
-                        )
-                    )
-                )
-            ), $classes['Example\ElementOne']);
+                                'setter' => 'value',
+                            ],
+                            'type' => $phpName,
+                        ],
+                    ],
+                ],
+            ], $classes['Example\ElementOne']);
     }
 
     /**
@@ -95,23 +95,23 @@ class Xsd2PhpElementTest extends Xsd2JmsBase
         $classes = $this->getClasses($xml);
         $this->assertCount(1, $classes);
 
-        $this->assertEquals(array(
-            'Example\\ElementOne' => array(
+        $this->assertEquals([
+            'Example\\ElementOne' => [
                 'xml_root_name' => 'ns-8ece61d2:element-one',
                 'xml_root_namespace' => 'http://www.example.com',
-                'properties' => array(
-                    '__value' => array(
+                'properties' => [
+                    '__value' => [
                         'expose' => true,
                         'xml_value' => true,
                         'access_type' => 'public_method',
-                        'accessor' => array(
+                        'accessor' => [
                             'getter' => 'value',
                             'setter' => 'value',
-                        ),
+                        ],
                         'type' => $jmsType,
-                    ),
-                ))
-        ), $classes['Example\ElementOne']);
+                    ],
+                ], ],
+        ], $classes['Example\ElementOne']);
     }
 
     /**
@@ -132,26 +132,24 @@ class Xsd2PhpElementTest extends Xsd2JmsBase
         $classes = $this->getClasses($xml);
         $this->assertCount(1, $classes);
 
-        $this->assertEquals(array(
-            'Example\\ElementOne' => array(
+        $this->assertEquals([
+            'Example\\ElementOne' => [
                 'xml_root_name' => 'ns-8ece61d2:element-one',
                 'xml_root_namespace' => 'http://www.example.com',
-                'properties' => array(
-                    '__value' => array(
+                'properties' => [
+                    '__value' => [
                         'expose' => true,
                         'xml_value' => true,
                         'access_type' => 'public_method',
-                        'accessor' => array(
+                        'accessor' => [
                             'getter' => 'value',
                             'setter' => 'value',
-                        ),
+                        ],
                         'type' => $jmsType,
-                    ),
-                ),
-
-            )
-        ), $classes['Example\ElementOne']);
-
+                    ],
+                ],
+            ],
+        ], $classes['Example\ElementOne']);
     }
 
     public function testUnqualifiedNsQualifiedElement()
@@ -181,59 +179,59 @@ class Xsd2PhpElementTest extends Xsd2JmsBase
             ';
         $classes = $this->getClasses($xsd);
 
-        $expected = array(
-            'Example\\Root' => array(
-                'Example\\Root' => array(
+        $expected = [
+            'Example\\Root' => [
+                'Example\\Root' => [
                     'xml_root_name' => 'ns-8ece61d2:root',
                     'xml_root_namespace' => 'http://www.example.com',
-                    'properties' => array(
-                        'child' => array(
+                    'properties' => [
+                        'child' => [
                             'expose' => true,
                             'access_type' => 'public_method',
                             'serialized_name' => 'child',
-                            'accessor' => array(
+                            'accessor' => [
                                 'getter' => 'getChild',
                                 'setter' => 'setChild',
-                            ),
-                            'xml_list' => array(
+                            ],
+                            'xml_list' => [
                                 'inline' => true,
                                 'entry_name' => 'child',
-                            ),
+                            ],
                             'type' => 'array<Example\\ChildType>',
-                        ),
-                        'childRoot' => array(
+                        ],
+                        'childRoot' => [
                             'expose' => true,
                             'access_type' => 'public_method',
                             'serialized_name' => 'childRoot',
-                            'accessor' => array(
+                            'accessor' => [
                                 'getter' => 'getChildRoot',
                                 'setter' => 'setChildRoot',
-                            ),
+                            ],
                             'type' => 'Example\\ChildType',
-                            'xml_element' => array(
+                            'xml_element' => [
                                 'namespace' => 'http://www.example.com',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-            'Example\\ChildType' => array(
-                'Example\\ChildType' => array(
-                    'properties' => array(
-                        'id' => array(
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'Example\\ChildType' => [
+                'Example\\ChildType' => [
+                    'properties' => [
+                        'id' => [
                             'expose' => true,
                             'access_type' => 'public_method',
                             'serialized_name' => 'id',
-                            'accessor' => array(
+                            'accessor' => [
                                 'getter' => 'getId',
                                 'setter' => 'setId',
-                            ),
+                            ],
                             'type' => 'string',
-                        ),
-                    ),
-                ),
-            ),
-        );
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
         $this->assertEquals($expected, $classes);
     }
@@ -265,56 +263,56 @@ class Xsd2PhpElementTest extends Xsd2JmsBase
             ';
         $classes = $this->getClasses($xsd);
 
-        $expected = array(
-            'Example\\Root' => array(
-                'Example\\Root' => array(
+        $expected = [
+            'Example\\Root' => [
+                'Example\\Root' => [
                     'xml_root_name' => 'ns-8ece61d2:root',
                     'xml_root_namespace' => 'http://www.example.com',
-                    'properties' => array(
-                        'child' => array(
+                    'properties' => [
+                        'child' => [
                             'expose' => true,
                             'access_type' => 'public_method',
                             'serialized_name' => 'child',
-                            'accessor' => array(
+                            'accessor' => [
                                 'getter' => 'getChild',
                                 'setter' => 'setChild',
-                            ),
-                            'xml_list' => array(
+                            ],
+                            'xml_list' => [
                                 'inline' => true,
                                 'entry_name' => 'child',
-                            ),
+                            ],
                             'type' => 'array<Example\\ChildType>',
-                        ),
-                        'childRoot' => array(
+                        ],
+                        'childRoot' => [
                             'expose' => true,
                             'access_type' => 'public_method',
                             'serialized_name' => 'childRoot',
-                            'accessor' => array(
+                            'accessor' => [
                                 'getter' => 'getChildRoot',
                                 'setter' => 'setChildRoot',
-                            ),
+                            ],
                             'type' => 'Example\\ChildType',
-                        ),
-                    ),
-                ),
-            ),
-            'Example\\ChildType' => array(
-                'Example\\ChildType' => array(
-                    'properties' => array(
-                        'id' => array(
+                        ],
+                    ],
+                ],
+            ],
+            'Example\\ChildType' => [
+                'Example\\ChildType' => [
+                    'properties' => [
+                        'id' => [
                             'expose' => true,
                             'access_type' => 'public_method',
                             'serialized_name' => 'id',
-                            'accessor' => array(
+                            'accessor' => [
                                 'getter' => 'getId',
                                 'setter' => 'setId',
-                            ),
+                            ],
                             'type' => 'string',
-                        ),
-                    ),
-                ),
-            ),
-        );
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
         $this->assertEquals($expected, $classes);
     }
@@ -341,23 +339,23 @@ class Xsd2PhpElementTest extends Xsd2JmsBase
         $this->assertCount(1, $classes);
 
         $this->assertEquals(
-            array(
-                'Example\\ChildType' => array(
-                    'Example\\ChildType' => array(
-                        'properties' => array(
-                            'nsValue' => array(
+            [
+                'Example\\ChildType' => [
+                    'Example\\ChildType' => [
+                        'properties' => [
+                            'nsValue' => [
                                 'expose' => true,
                                 'access_type' => 'public_method',
                                 'serialized_name' => 'ns.value',
-                                'accessor' => array(
+                                'accessor' => [
                                     'getter' => 'getNsValue',
-                                    'setter' => 'setNsValue'
-                                ),
-                                'type' => 'string'
-                            )
-                        )
-                    )
-                )
-            ), $classes);
+                                    'setter' => 'setNsValue',
+                                ],
+                                'type' => 'string',
+                            ],
+                        ],
+                    ],
+                ],
+            ], $classes);
     }
 }
