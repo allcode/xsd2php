@@ -1,4 +1,5 @@
 <?php
+
 namespace GoetasWebservices\Xsd\XsdToPhp\Writer;
 
 use GoetasWebservices\Xsd\XsdToPhp\Php\PathGenerator\PathGenerator;
@@ -29,8 +30,8 @@ class PHPClassWriter implements LoggerAwareInterface
             $fileGen->setFilename($path);
             $fileGen->setClass($item);
             $fileGen->write();
-            $this->logger->debug(sprintf("Written PHP class file %s", $path));
+            $this->logger->debug(sprintf('Written PHP class file %s', $path));
         }
-        $this->logger->info(sprintf("Written %s STUB classes", count($items)));
+        $this->logger->info(sprintf('Written %s STUB classes', count($items)));
     }
 }

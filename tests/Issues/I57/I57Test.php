@@ -1,4 +1,5 @@
 <?php
+
 namespace GoetasWebservices\Xsd\XsdToPhp\Tests\Issues\I57;
 
 use GoetasWebservices\Xsd\XsdToPhp\Jms\YamlConverter;
@@ -8,15 +9,13 @@ use GoetasWebservices\XML\XSDReader\SchemaReader;
 
 class I57Test extends \PHPUnit_Framework_TestCase
 {
-
     public function testMissingClass()
     {
-
-        $expectedItems = array(
+        $expectedItems = [
             'Epa\\Job',
             'Epa\\Item',
-            'Epa\\Item\\PriceAType'
-        );
+            'Epa\\Item\\PriceAType',
+        ];
 
         $reader = new SchemaReader();
         $schema = $reader->readFile(__DIR__ . '/data.xsd');
