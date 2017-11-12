@@ -83,116 +83,53 @@ abstract class AbstractConverter
         $this->logger = $logger ?: new NullLogger();
 
         $ns = 'http://www.w3.org/2001/XMLSchema';
-        $this->addAliasMap($ns, 'gYearMonth', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'gMonthDay', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'gMonth', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'gYear', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'NMTOKEN', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'NMTOKENS', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'QName', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'NCName', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'decimal', function (Type $type) {
-            return 'float';
-        });
-        $this->addAliasMap($ns, 'float', function (Type $type) {
-            return 'float';
-        });
-        $this->addAliasMap($ns, 'double', function (Type $type) {
-            return 'float';
-        });
-        $this->addAliasMap($ns, 'string', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'normalizedString', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'integer', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'int', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'unsignedInt', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'negativeInteger', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'positiveInteger', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'nonNegativeInteger', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'nonPositiveInteger', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'long', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'unsignedLong', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'short', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'boolean', function (Type $type) {
-            return 'boolean';
-        });
-        $this->addAliasMap($ns, 'nonNegativeInteger', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'positiveInteger', function (Type $type) {
-            return 'integer';
-        });
-        $this->addAliasMap($ns, 'language', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'token', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'anyURI', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'byte', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'duration', function (Type $type) {
-            return 'DateInterval';
-        });
+        $typeMap = [
+            'integer' => [
+                'gYearMonth',
+                'gMonthDay',
+                'gMonth',
+                'gYear',
+                'integer',
+                'int',
+                'unsignedInt',
+                'negativeInteger',
+                'positiveInteger',
+                'nonNegativeInteger',
+                'nonPositiveInteger',
+                'long',
+                'unsignedLong',
+                'short',
+            ],
+            'string' => [
+                'string',
+                'normalizedString',
+                'language',
+                'token',
+                'anyURI',
+                'byte',
+                'ID',
+                'IDREF',
+                'IDREFS',
+                'Name',
+                'NCName',
+                'QName',
+                'NMTOKEN',
+                'NMTOKENS',
+            ],
+            'float' => ['decimal', 'float', 'double'],
+            'boolean' => ['boolean'],
+            'DateInterval' => ['duration'],
+        ];
+        $this->addAliasMapTypesFromArray($ns, $typeMap);
+    }
 
-        $this->addAliasMap($ns, 'ID', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'IDREF', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'IDREFS', function (Type $type) {
-            return 'string';
-        });
-        $this->addAliasMap($ns, 'Name', function (Type $type) {
-            return 'string';
-        });
-
-        $this->addAliasMap($ns, 'NCName', function (Type $type) {
-            return 'string';
-        });
+    protected function addAliasMapTypesFromArray(string $ns, array $typeMap): void
+    {
+        foreach ($typeMap as $type => $names) {
+            foreach ($names as $name) {
+                $this->addAliasMapType($ns, $name, $type);
+            }
+        }
     }
 
     protected function getNamingStrategy(): NamingStrategy
