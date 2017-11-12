@@ -5,7 +5,6 @@ namespace GoetasWebservices\Xsd\XsdToPhp\Php;
 use Exception;
 use GoetasWebservices\XML\XSDReader\Schema\Attribute\AttributeItem;
 use GoetasWebservices\XML\XSDReader\Schema\Attribute\Group as AttributeGroup;
-use GoetasWebservices\XML\XSDReader\Schema\Element\Element;
 use GoetasWebservices\XML\XSDReader\Schema\Element\ElementDef;
 use GoetasWebservices\XML\XSDReader\Schema\Element\ElementRef;
 use GoetasWebservices\XML\XSDReader\Schema\Element\ElementSingle;
@@ -71,7 +70,7 @@ class PhpConverter extends AbstractConverter
 
     private $classes = [];
 
-    public function convert(array $schemas)
+    public function convert(array $schemas): array
     {
         $visited = [];
         $this->classes = [];
@@ -85,7 +84,7 @@ class PhpConverter extends AbstractConverter
     /**
      * @return PHPClass[]
      */
-    private function getTypes()
+    private function getTypes(): array
     {
         uasort($this->classes, function ($a, $b) {
             return strcmp($a['class']->getFullName(), $b['class']->getFullName());
@@ -100,7 +99,7 @@ class PhpConverter extends AbstractConverter
         return $ret;
     }
 
-    private function navigate(Schema $schema, array &$visited)
+    private function navigate(Schema $schema, array &$visited): void
     {
         if (isset($visited[spl_object_hash($schema)])) {
             return;
@@ -125,7 +124,7 @@ class PhpConverter extends AbstractConverter
         }
     }
 
-    private function visitTypeBase(PHPClass $class, Type $type)
+    private function visitTypeBase(PHPClass $class, Type $type): void
     {
         $class->setAbstract($type->isAbstract());
 
@@ -140,7 +139,7 @@ class PhpConverter extends AbstractConverter
         }
     }
 
-    private function visitGroup(PHPClass $class, Schema $schema, Group $group)
+    private function visitGroup(PHPClass $class, Schema $schema, Group $group): void
     {
         foreach ($group->getElements() as $childGroup) {
             if ($childGroup instanceof Group) {
@@ -156,7 +155,7 @@ class PhpConverter extends AbstractConverter
         PHPClass $class,
         Schema $schema,
         AttributeGroup $att
-    ) {
+    ): void {
         foreach ($att->getAttributes() as $childAttr) {
             if ($childAttr instanceof AttributeGroup) {
                 $this->visitAttributeGroup($class, $schema, $childAttr);
@@ -169,13 +168,7 @@ class PhpConverter extends AbstractConverter
 
     private $skipByType = [];
 
-    /**
-     * @param ElementDef $element
-     * @param bool       $skip
-     *
-     * @return PHPClass
-     */
-    public function visitElementDef(ElementDef $element, $skip = false)
+    public function visitElementDef(ElementDef $element, bool $skip = false): PHPClass
     {
         if (!isset($this->classes[spl_object_hash($element)])) {
             $schema = $element->getSchema();
@@ -220,12 +213,12 @@ class PhpConverter extends AbstractConverter
         return $this->classes[spl_object_hash($element)]['class'];
     }
 
-    public function isSkip($class)
+    public function isSkip(PHPClass $class): bool
     {
         return !empty($this->skipByType[spl_object_hash($class)]);
     }
 
-    private function findPHPName(Type $type)
+    private function findPHPName(Type $type): array
     {
         $schema = $type->getSchema();
 
@@ -259,17 +252,11 @@ class PhpConverter extends AbstractConverter
         ];
     }
 
-    /**
-     * @param Type $type
-     * @param bool $force
-     * @param bool $skip
-     *
-     * @return PHPClass
-     *
-     * @throws Exception
-     */
-    public function visitType(Type $type, $force = false, $skip = false)
-    {
+    public function visitType(
+        Type $type,
+        bool $force = false,
+        bool $skip = false
+    ): PHPClass {
         if (!isset($this->classes[spl_object_hash($type)])) {
             $skip = $skip || in_array($type->getSchema()->getTargetNamespace(),
                     $this->baseSchemas, true);
@@ -319,15 +306,11 @@ class PhpConverter extends AbstractConverter
         return $this->classes[spl_object_hash($type)]['class'];
     }
 
-    /**
-     * @param Type     $type
-     * @param string   $name
-     * @param PHPClass $parentClass
-     *
-     * @return \GoetasWebservices\Xsd\XsdToPhp\Php\Structure\PHPClass
-     */
-    private function visitTypeAnonymous(Type $type, $name, PHPClass $parentClass)
-    {
+    private function visitTypeAnonymous(
+        Type $type,
+        string $name,
+        PHPClass $parentClass
+    ): PHPClass {
         if (!isset($this->classes[spl_object_hash($type)])) {
             $this->classes[spl_object_hash($type)]['class'] = $class = new PHPClass();
             $class->setName(
@@ -350,7 +333,7 @@ class PhpConverter extends AbstractConverter
         return $this->classes[spl_object_hash($type)]['class'];
     }
 
-    private function visitComplexType(PHPClass $class, ComplexType $type)
+    private function visitComplexType(PHPClass $class, ComplexType $type): void
     {
         $schema = $type->getSchema();
         foreach ($type->getElements() as $element) {
@@ -363,7 +346,7 @@ class PhpConverter extends AbstractConverter
         }
     }
 
-    private function visitSimpleType(PHPClass $class, SimpleType $type)
+    private function visitSimpleType(PHPClass $class, SimpleType $type): void
     {
         if ($restriction = $type->getRestriction()) {
             $parent = $restriction->getBase();
@@ -397,7 +380,7 @@ class PhpConverter extends AbstractConverter
         }
     }
 
-    private function handleClassExtension(PHPClass $class, Type $type)
+    private function handleClassExtension(PHPClass $class, Type $type): void
     {
         if ($alias = $this->getTypeAlias($type)) {
             $c = PHPClass::createFromFQCN($alias);
@@ -411,7 +394,7 @@ class PhpConverter extends AbstractConverter
         }
     }
 
-    private function visitBaseComplexType(PHPClass $class, BaseComplexType $type)
+    private function visitBaseComplexType(PHPClass $class, BaseComplexType $type): void
     {
         $parent = $type->getParent();
         if ($parent) {
@@ -436,8 +419,8 @@ class PhpConverter extends AbstractConverter
         PHPClass $class,
         Schema $schema,
         AttributeItem $attribute,
-        $arrayize = true
-    ) {
+        bool $arrayize = true
+    ): PHPProperty {
         $property = new PHPProperty();
         $property->setName($this->getNamingStrategy()->getPropertyName($attribute));
 
@@ -459,20 +442,12 @@ class PhpConverter extends AbstractConverter
         return $property;
     }
 
-    /**
-     * @param PHPClass $class
-     * @param Schema   $schema
-     * @param Element  $element
-     * @param bool     $arrayize
-     *
-     * @return \GoetasWebservices\Xsd\XsdToPhp\Php\Structure\PHPProperty
-     */
     private function visitElement(
         PHPClass $class,
         Schema $schema,
         ElementSingle $element,
-        $arrayize = true
-    ) {
+        bool $arrayize = true
+    ): PHPProperty {
         $property = new PHPProperty();
         $property->setName($this->getNamingStrategy()->getPropertyName($element));
         $property->setDoc($element->getDoc());
@@ -533,8 +508,11 @@ class PhpConverter extends AbstractConverter
         return $property;
     }
 
-    private function findPHPClass(PHPClass $class, Item $node, $force = false)
-    {
+    private function findPHPClass(
+        PHPClass $class,
+        Item $node,
+        bool $force = false
+    ): ?PHPClass {
         if ($node instanceof ElementRef) {
             return $this->visitElementDef($node->getReferencedElement());
         }
@@ -548,11 +526,14 @@ class PhpConverter extends AbstractConverter
         }
     }
 
-    private function typeHasValue(Type $type, PHPClass $parentClass, $name)
-    {
+    private function typeHasValue(
+        Type $type,
+        PHPClass $parentClass,
+        string $name
+    ): ?PHPClass {
         do {
             if (!($type instanceof SimpleType)) {
-                return false;
+                return null;
             }
 
             if ($alias = $this->getTypeAlias($type)) {
@@ -579,6 +560,6 @@ class PhpConverter extends AbstractConverter
             )
         );
 
-        return false;
+        return null;
     }
 }

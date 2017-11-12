@@ -4,13 +4,22 @@ namespace GoetasWebservices\Xsd\XsdToPhp\Php\Structure;
 
 class PHPClass
 {
+    /**
+     * @var string|null
+     */
     protected $name;
 
+    /**
+     * @var string|null
+     */
     protected $namespace;
 
+    /**
+     * @var string|null
+     */
     protected $doc;
 
-    public static function createFromFQCN($className)
+    public static function createFromFQCN($className): self
     {
         if (($pos = strrpos($className, '\\')) !== false) {
             return new self(substr($className, $pos + 1), substr($className, 0, $pos));
@@ -19,12 +28,7 @@ class PHPClass
         }
     }
 
-    /**
-     * @param bool $onlyParent
-     *
-     * @return PHPProperty|null
-     */
-    public function isSimpleType($onlyParent = false)
+    public function isSimpleType(bool $onlyParent = false): ?PHPProperty
     {
         if ($onlyParent) {
             $e = $this->getExtends();
@@ -42,7 +46,7 @@ class PHPClass
         return null;
     }
 
-    public function getPhpType()
+    public function getPhpType(): string
     {
         if (!$this->getNamespace()) {
             if ($this->isNativeType()) {
@@ -69,7 +73,7 @@ class PHPClass
         ]);
     }
 
-    public function __construct($name = null, $namespace = null)
+    public function __construct(string $name = null, string $namespace = null)
     {
         $this->name = $name;
         $this->namespace = $namespace;

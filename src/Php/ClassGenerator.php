@@ -6,7 +6,7 @@ use Doctrine\Common\Inflector\Inflector;
 use GoetasWebservices\Xsd\XsdToPhp\Php\Structure\PHPClass;
 use GoetasWebservices\Xsd\XsdToPhp\Php\Structure\PHPClassOf;
 use GoetasWebservices\Xsd\XsdToPhp\Php\Structure\PHPProperty;
-use Zend\Code\Generator;
+use Zend\Code\Generator\ClassGenerator as ZendClassGenerator;
 use Zend\Code\Generator\DocBlock\Tag\ParamTag;
 use Zend\Code\Generator\DocBlock\Tag\PropertyTag;
 use Zend\Code\Generator\DocBlock\Tag\ReturnTag;
@@ -17,7 +17,7 @@ use Zend\Code\Generator\PropertyGenerator;
 
 class ClassGenerator
 {
-    private function handleBody(Generator\ClassGenerator $class, PHPClass $type)
+    private function handleBody(ZendClassGenerator $class, PHPClass $type): bool
     {
         foreach ($type->getProperties() as $prop) {
             if ($prop->getName() !== '__value') {
@@ -37,7 +37,7 @@ class ClassGenerator
         return true;
     }
 
-    private function isNativeType(PHPClass $class)
+    private function isNativeType(PHPClass $class): bool
     {
         return !$class->getNamespace() && in_array($class->getName(), [
                 'string',
@@ -52,11 +52,11 @@ class ClassGenerator
     }
 
     private function handleValueMethod(
-        Generator\ClassGenerator $generator,
+        ZendClassGenerator $generator,
         PHPProperty $prop,
         PHPClass $class,
-        $all = true
-    ) {
+        bool $all = true
+    ): void {
         $type = $prop->getType();
 
         $docblock = new DocBlockGenerator('Construct');
@@ -121,10 +121,10 @@ class ClassGenerator
     }
 
     private function handleSetter(
-        Generator\ClassGenerator $generator,
+        ZendClassGenerator $generator,
         PHPProperty $prop,
         PHPClass $class
-    ) {
+    ): void {
         $methodBody = '';
         $docblock = new DocBlockGenerator();
 
@@ -186,10 +186,10 @@ class ClassGenerator
     }
 
     private function handleGetter(
-        Generator\ClassGenerator $generator,
+        ZendClassGenerator $generator,
         PHPProperty $prop,
         PHPClass $class
-    ) {
+    ): void {
         if ($prop->getType() instanceof PHPClassOf) {
             $docblock = new DocBlockGenerator();
             $docblock->setShortDescription('isset ' . $prop->getName());
@@ -267,10 +267,10 @@ class ClassGenerator
     }
 
     private function handleAdder(
-        Generator\ClassGenerator $generator,
+        ZendClassGenerator $generator,
         PHPProperty $prop,
         PHPClass $class
-    ) {
+    ): void {
         $type = $prop->getType();
         $propName = $type->getArg()->getName();
 
@@ -317,10 +317,10 @@ class ClassGenerator
     }
 
     private function handleMethod(
-        Generator\ClassGenerator $generator,
+        ZendClassGenerator $generator,
         PHPProperty $prop,
         PHPClass $class
-    ) {
+    ): void {
         if ($prop->getType() instanceof PHPClassOf) {
             $this->handleAdder($generator, $prop, $class);
         }
@@ -329,8 +329,10 @@ class ClassGenerator
         $this->handleSetter($generator, $prop, $class);
     }
 
-    private function handleProperty(Generator\ClassGenerator $class, PHPProperty $prop)
-    {
+    private function handleProperty(
+        ZendClassGenerator $class,
+        PHPProperty $prop
+    ): void {
         $generatedProp = new PropertyGenerator($prop->getName());
         $generatedProp->setVisibility(PropertyGenerator::VISIBILITY_PRIVATE);
 
@@ -371,9 +373,9 @@ class ClassGenerator
         $docBlock->setTag($tag);
     }
 
-    public function generate(PHPClass $type)
+    public function generate(PHPClass $type): ?ZendClassGenerator
     {
-        $class = new \Zend\Code\Generator\ClassGenerator();
+        $class = new ZendClassGenerator();
         $docblock = new DocBlockGenerator('Class representing ' . $type->getName());
         if ($type->getDoc()) {
             $docblock->setLongDescription($type->getDoc());
@@ -404,5 +406,7 @@ class ClassGenerator
         if ($this->handleBody($class, $type)) {
             return $class;
         }
+
+        return null;
     }
 }

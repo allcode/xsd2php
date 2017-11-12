@@ -9,9 +9,6 @@ class PHPClassOf extends PHPClass
      */
     protected $arg;
 
-    /**
-     * @param PHPArg $arg
-     */
     public function __construct(PHPArg $arg)
     {
         parent::__construct('array');
@@ -26,10 +23,7 @@ class PHPClassOf extends PHPClass
         return 'array of ' . $this->arg->getName();
     }
 
-    /**
-     * @return PHPArg
-     */
-    public function getArg()
+    public function getArg(): PHPArg
     {
         return $this->arg;
     }

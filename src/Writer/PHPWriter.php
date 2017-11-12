@@ -33,9 +33,9 @@ class PHPWriter extends Writer implements LoggerAwareInterface
         $this->logger = $logger ?: new NullLogger();
     }
 
-    public function write(array $items)
+    public function write(array $items): void
     {
-        return $this->classWriter->write(
+        $this->classWriter->write(
             array_filter(
                 array_map(
                     function (PHPClass $item) {

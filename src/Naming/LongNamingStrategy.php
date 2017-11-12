@@ -22,17 +22,17 @@ class LongNamingStrategy implements NamingStrategy
         'numeric',
     ];
 
-    public function getTypeName(Type $type)
+    public function getTypeName(Type $type): string
     {
         return $this->classify($type->getName()) . 'Type';
     }
 
-    public function getAnonymousTypeName(Type $type, $parentName)
+    public function getAnonymousTypeName(Type $type, string $parentName): string
     {
         return $this->classify($parentName) . 'AnonymousType';
     }
 
-    public function getItemName(Item $item)
+    public function getItemName(Item $item): string
     {
         $name = $this->classify($item->getName());
         if (in_array(strtolower($name), $this->reservedWords)) {
@@ -42,13 +42,20 @@ class LongNamingStrategy implements NamingStrategy
         return $name;
     }
 
-    public function getPropertyName($item)
+    /**
+     * {@inheritdoc}
+     */
+    public function getPropertyName($item): string
     {
         return Inflector::camelize(str_replace('.', ' ', $item->getName()));
     }
 
-    private function classify($name)
+    private function classify(?string $name): string
     {
+        if ($name === null) {
+            return '';
+        }
+
         return Inflector::classify(str_replace('.', ' ', $name));
     }
 }

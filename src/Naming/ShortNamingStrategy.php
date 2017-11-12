@@ -22,7 +22,7 @@ class ShortNamingStrategy implements NamingStrategy
         'numeric',
     ];
 
-    public function getTypeName(Type $type)
+    public function getTypeName(Type $type): string
     {
         $name = $this->classify($type->getName());
         if ($name && substr($name, -4) !== 'Type') {
@@ -32,17 +32,20 @@ class ShortNamingStrategy implements NamingStrategy
         return $name;
     }
 
-    public function getAnonymousTypeName(Type $type, $parentName)
+    public function getAnonymousTypeName(Type $type, string $parentName): string
     {
         return $this->classify($parentName) . 'AType';
     }
 
-    public function getPropertyName($item)
+    /**
+     * {@inheritdoc}
+     */
+    public function getPropertyName($item): string
     {
         return Inflector::camelize(str_replace('.', ' ', $item->getName()));
     }
 
-    public function getItemName(Item $item)
+    public function getItemName(Item $item): string
     {
         $name = $this->classify($item->getName());
         if (in_array(strtolower($name), $this->reservedWords)) {
@@ -52,8 +55,12 @@ class ShortNamingStrategy implements NamingStrategy
         return $name;
     }
 
-    private function classify($name)
+    private function classify(?string $name): string
     {
+        if ($name === null) {
+            return '';
+        }
+
         return Inflector::classify(str_replace('.', ' ', $name));
     }
 }

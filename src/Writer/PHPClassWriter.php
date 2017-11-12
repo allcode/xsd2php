@@ -26,7 +26,7 @@ class PHPClassWriter implements LoggerAwareInterface
         $this->logger = $logger ?: new NullLogger();
     }
 
-    public function write(array $items)
+    public function write(array $items): void
     {
         foreach ($items as $item) {
             $path = $this->pathGenerator->getPath($item);

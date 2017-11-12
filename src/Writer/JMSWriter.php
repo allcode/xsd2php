@@ -26,7 +26,7 @@ class JMSWriter extends Writer implements LoggerAwareInterface
         $this->logger = $logger ?: new NullLogger();
     }
 
-    public function write(array $items)
+    public function write(array $items): void
     {
         $dumper = new Dumper();
         foreach ($items as $item) {
