@@ -12,13 +12,16 @@ use Symfony\Component\Yaml\Dumper;
 class JMSWriter extends Writer implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
+
     /**
      * @var PathGenerator
      */
     private $pathGenerator;
 
-    public function __construct(PathGenerator $pathGenerator, LoggerInterface $logger = null)
-    {
+    public function __construct(
+        PathGenerator $pathGenerator,
+        LoggerInterface $logger = null
+    ) {
         $this->pathGenerator = $pathGenerator;
         $this->logger = $logger ?: new NullLogger();
     }

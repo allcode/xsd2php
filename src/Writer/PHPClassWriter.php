@@ -13,10 +13,15 @@ class PHPClassWriter implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
+    /**
+     * @var PathGenerator
+     */
     protected $pathGenerator;
 
-    public function __construct(PathGenerator $pathGenerator, LoggerInterface $logger = null)
-    {
+    public function __construct(
+        PathGenerator $pathGenerator,
+        LoggerInterface $logger = null
+    ) {
         $this->pathGenerator = $pathGenerator;
         $this->logger = $logger ?: new NullLogger();
     }

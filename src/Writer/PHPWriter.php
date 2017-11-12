@@ -13,11 +13,21 @@ class PHPWriter extends Writer implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
+    /**
+     * @var PHPClassWriter
+     */
     protected $classWriter;
+
+    /**
+     * @var ClassGenerator
+     */
     private $generator;
 
-    public function __construct(PHPClassWriter $classWriter, ClassGenerator $generator, LoggerInterface $logger = null)
-    {
+    public function __construct(
+        PHPClassWriter $classWriter,
+        ClassGenerator $generator,
+        LoggerInterface $logger = null
+    ) {
         $this->generator = $generator;
         $this->classWriter = $classWriter;
         $this->logger = $logger ?: new NullLogger();
@@ -25,8 +35,15 @@ class PHPWriter extends Writer implements LoggerAwareInterface
 
     public function write(array $items)
     {
-        return $this->classWriter->write(array_filter(array_map(function (PHPClass $item) {
-            return $this->generator->generate($item);
-        }, $items)));
+        return $this->classWriter->write(
+            array_filter(
+                array_map(
+                    function (PHPClass $item) {
+                        return $this->generator->generate($item);
+                    },
+                    $items
+                )
+            )
+        );
     }
 }

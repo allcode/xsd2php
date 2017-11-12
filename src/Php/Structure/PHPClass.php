@@ -22,7 +22,7 @@ class PHPClass
     /**
      * @param bool $onlyParent
      *
-     * @return PHPProperty
+     * @return PHPProperty|null
      */
     public function isSimpleType($onlyParent = false)
     {
@@ -33,11 +33,13 @@ class PHPClass
                     return $e->getProperty('__value');
                 }
             }
-        } else {
-            if ($this->hasPropertyInHierarchy('__value') && count($this->getPropertiesInHierarchy()) === 1) {
-                return $this->getPropertyInHierarchy('__value');
-            }
+        } elseif ($this->hasPropertyInHierarchy('__value')
+            && count($this->getPropertiesInHierarchy()) === 1
+        ) {
+            return $this->getPropertyInHierarchy('__value');
         }
+
+        return null;
     }
 
     public function getPhpType()
@@ -122,7 +124,7 @@ class PHPClass
     protected $checks = [];
 
     /**
-     * @var PHPConstant[]
+     * @var array
      */
     protected $constants = [];
 
@@ -187,7 +189,10 @@ class PHPClass
         if ($this->hasProperty($name)) {
             return true;
         }
-        if (($this instanceof self) && $this->getExtends() && $this->getExtends()->hasPropertyInHierarchy($name)) {
+        if (($this instanceof self)
+            && $this->getExtends()
+            && $this->getExtends()->hasPropertyInHierarchy($name)
+        ) {
             return true;
         }
 
@@ -204,7 +209,10 @@ class PHPClass
         if ($this->hasProperty($name)) {
             return $this->getProperty($name);
         }
-        if (($this instanceof self) && $this->getExtends() && $this->getExtends()->hasPropertyInHierarchy($name)) {
+        if (($this instanceof self)
+            && $this->getExtends()
+            && $this->getExtends()->hasPropertyInHierarchy($name)
+        ) {
             return $this->getExtends()->getPropertyInHierarchy($name);
         }
 
@@ -212,9 +220,7 @@ class PHPClass
     }
 
     /**
-     * @param string $name
-     *
-     * @return PHPProperty
+     * @return PHPProperty[]
      */
     public function getPropertiesInHierarchy()
     {

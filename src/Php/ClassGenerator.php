@@ -40,19 +40,23 @@ class ClassGenerator
     private function isNativeType(PHPClass $class)
     {
         return !$class->getNamespace() && in_array($class->getName(), [
-            'string',
-            'int',
-            'float',
-            'integer',
-            'boolean',
-            'array',
-            'mixed',
-            'callable',
-        ]);
+                'string',
+                'int',
+                'float',
+                'integer',
+                'boolean',
+                'array',
+                'mixed',
+                'callable',
+            ]);
     }
 
-    private function handleValueMethod(Generator\ClassGenerator $generator, PHPProperty $prop, PHPClass $class, $all = true)
-    {
+    private function handleValueMethod(
+        Generator\ClassGenerator $generator,
+        PHPProperty $prop,
+        PHPClass $class,
+        $all = true
+    ) {
         $type = $prop->getType();
 
         $docblock = new DocBlockGenerator('Construct');
@@ -116,8 +120,11 @@ class ClassGenerator
         $generator->addMethodFromGenerator($method);
     }
 
-    private function handleSetter(Generator\ClassGenerator $generator, PHPProperty $prop, PHPClass $class)
-    {
+    private function handleSetter(
+        Generator\ClassGenerator $generator,
+        PHPProperty $prop,
+        PHPClass $class
+    ) {
         $methodBody = '';
         $docblock = new DocBlockGenerator();
 
@@ -178,8 +185,11 @@ class ClassGenerator
         $generator->addMethodFromGenerator($method);
     }
 
-    private function handleGetter(Generator\ClassGenerator $generator, PHPProperty $prop, PHPClass $class)
-    {
+    private function handleGetter(
+        Generator\ClassGenerator $generator,
+        PHPProperty $prop,
+        PHPClass $class
+    ) {
         if ($prop->getType() instanceof PHPClassOf) {
             $docblock = new DocBlockGenerator();
             $docblock->setShortDescription('isset ' . $prop->getName());
@@ -194,7 +204,8 @@ class ClassGenerator
 
             $paramIndex = new ParameterGenerator('index', 'mixed');
 
-            $method = new MethodGenerator('isset' . Inflector::classify($prop->getName()), [$paramIndex]);
+            $method = new MethodGenerator('isset' . Inflector::classify($prop->getName()),
+                [$paramIndex]);
             $method->setDocBlock($docblock);
             $method->setBody('return isset($this->' . $prop->getName() . '[$index]);');
             $generator->addMethodFromGenerator($method);
@@ -211,12 +222,12 @@ class ClassGenerator
 
             $docblock->setTag(new ReturnTag('void'));
 
-            $method = new MethodGenerator('unset' . Inflector::classify($prop->getName()), [$paramIndex]);
+            $method = new MethodGenerator('unset' . Inflector::classify($prop->getName()),
+                [$paramIndex]);
             $method->setDocBlock($docblock);
             $method->setBody('unset($this->' . $prop->getName() . '[$index]);');
             $generator->addMethodFromGenerator($method);
         }
-        // ////
 
         $docblock = new DocBlockGenerator();
 
@@ -255,8 +266,11 @@ class ClassGenerator
         $generator->addMethodFromGenerator($method);
     }
 
-    private function handleAdder(Generator\ClassGenerator $generator, PHPProperty $prop, PHPClass $class)
-    {
+    private function handleAdder(
+        Generator\ClassGenerator $generator,
+        PHPProperty $prop,
+        PHPClass $class
+    ) {
         $type = $prop->getType();
         $propName = $type->getArg()->getName();
 
@@ -302,8 +316,11 @@ class ClassGenerator
         $generator->addMethodFromGenerator($method);
     }
 
-    private function handleMethod(Generator\ClassGenerator $generator, PHPProperty $prop, PHPClass $class)
-    {
+    private function handleMethod(
+        Generator\ClassGenerator $generator,
+        PHPProperty $prop,
+        PHPClass $class
+    ) {
         if ($prop->getType() instanceof PHPClassOf) {
             $this->handleAdder($generator, $prop, $class);
         }

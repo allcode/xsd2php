@@ -12,7 +12,11 @@ class Psr4PathGenerator extends Psr4PathGeneratorBase implements PathGenerator
     {
         foreach ($this->namespaces as $namespace => $dir) {
             if (strpos(trim($php->getNamespaceName()) . '\\', $namespace) === 0) {
-                $d = strtr(substr($php->getNamespaceName(), strlen($namespace)), '\\', '/');
+                $d = strtr(
+                    substr($php->getNamespaceName(), strlen($namespace)),
+                    '\\',
+                    '/'
+                );
                 $dir = rtrim($dir, '/') . '/' . $d;
                 if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
                     throw new PathGeneratorException("Can't create the '$dir' directory");
@@ -22,6 +26,10 @@ class Psr4PathGenerator extends Psr4PathGeneratorBase implements PathGenerator
             }
         }
 
-        throw new PathGeneratorException("Unable to determine location to save PHP class '{$php->getNamespaceName()}\\{$php->getName()}'");
+        throw new PathGeneratorException(sprintf(
+            "Unable to determine location to save PHP class '%s\\%s'",
+            $php->getNamespaceName(),
+            $php->getName()
+        ));
     }
 }

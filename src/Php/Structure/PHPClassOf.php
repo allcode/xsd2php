@@ -14,8 +14,8 @@ class PHPClassOf extends PHPClass
      */
     public function __construct(PHPArg $arg)
     {
+        parent::__construct('array');
         $this->arg = $arg;
-        $this->name = 'array';
     }
 
     /**
@@ -23,7 +23,7 @@ class PHPClassOf extends PHPClass
      */
     public function __toString()
     {
-        return 'array of ' . $this->arg;
+        return 'array of ' . $this->arg->getName();
     }
 
     /**

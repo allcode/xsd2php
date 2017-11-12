@@ -26,22 +26,22 @@ class Convert extends Command
         parent::__construct();
     }
 
-    /**
-     * @see Console\Command\Command
-     */
     protected function configure()
     {
         $this->setName('convert');
         $this->setDescription('Convert a XSD file into PHP classes and JMS serializer metadata files');
-        $this->setDefinition([
-            new InputArgument('config', InputArgument::REQUIRED, 'Where is located your XSD definitions'),
-            new InputArgument('src', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Where is located your XSD definitions'),
-        ]);
+        $this->addArgument(
+            'config',
+            InputArgument::REQUIRED,
+            'Where is located your XSD definitions'
+        );
+        $this->addArgument(
+            'src',
+            InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+            'Where is located your XSD definitions'
+        );
     }
 
-    /**
-     * @see Console\Command\Command
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->loadConfigurations($input->getArgument('config'));
