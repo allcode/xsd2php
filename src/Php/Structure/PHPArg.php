@@ -4,40 +4,55 @@ namespace GoetasWebservices\Xsd\XsdToPhp\Php\Structure;
 
 class PHPArg
 {
+    /**
+     * @var string|null
+     */
     protected $doc;
 
+    /**
+     * @var PHPClass|null
+     */
     protected $type;
 
+    /**
+     * @var string|null
+     */
     protected $name;
 
+    /**
+     * @var mixed|null
+     */
     protected $default;
 
-    public function __construct($name = null, $type = null)
+    public function __construct(string $name = null, PHPClass $type = null)
     {
         $this->name = $name;
         $this->type = $type;
     }
 
-    public function getDoc()
+    public function getDoc(): ?string
     {
         return $this->doc;
     }
 
-    public function setDoc($doc)
+    /**
+     * @return $this
+     */
+    public function setDoc(?string $doc)
     {
         $this->doc = $doc;
 
         return $this;
     }
 
-    /**
-     * @return PHPClass
-     */
-    public function getType()
+    public function getType(): ?PHPClass
     {
         return $this->type;
     }
 
+    /**
+     * @return $this
+     */
     public function setType(PHPClass $type)
     {
         $this->type = $type;
@@ -45,23 +60,34 @@ class PHPArg
         return $this;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    /**
+     * @return $this
+     */
+    public function setName(string $name)
     {
         $this->name = $name;
 
         return $this;
     }
 
+    /**
+     * @return mixed|null
+     */
     public function getDefault()
     {
         return $this->default;
     }
 
+    /**
+     * @param mixed $default
+     *
+     * @return $this
+     */
     public function setDefault($default)
     {
         $this->default = $default;

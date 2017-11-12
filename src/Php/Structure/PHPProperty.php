@@ -9,20 +9,15 @@ class PHPProperty extends PHPArg
      */
     protected $visibility = 'protected';
 
-    /**
-     * @return string
-     */
-    public function getVisibility()
+    public function getVisibility(): string
     {
         return $this->visibility;
     }
 
     /**
-     * @param string $visibility
-     *
      * @return $this
      */
-    public function setVisibility($visibility)
+    public function setVisibility(string $visibility)
     {
         $this->visibility = $visibility;
 

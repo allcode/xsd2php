@@ -52,7 +52,7 @@ class YamlConverter extends AbstractConverter
 
     private $classes = [];
 
-    public function convert(array $schemas)
+    public function convert(array $schemas): array
     {
         $visited = [];
         $this->classes = [];
@@ -63,7 +63,7 @@ class YamlConverter extends AbstractConverter
         return $this->getTypes();
     }
 
-    private function flattAttributes(AttributeContainer $container)
+    private function flattAttributes(AttributeContainer $container): array
     {
         $items = [];
         foreach ($container->getAttributes() as $attr) {
@@ -77,7 +77,7 @@ class YamlConverter extends AbstractConverter
         return $items;
     }
 
-    private function flattElements(ElementContainer $container)
+    private function flattElements(ElementContainer $container): array
     {
         $items = [];
         foreach ($container->getElements() as $attr) {
@@ -91,10 +91,7 @@ class YamlConverter extends AbstractConverter
         return $items;
     }
 
-    /**
-     * @return PHPClass[]
-     */
-    public function getTypes()
+    public function getTypes(): array
     {
         uasort($this->classes, function ($a, $b) {
             return strcmp(key($a), key($b));
@@ -114,7 +111,7 @@ class YamlConverter extends AbstractConverter
         return $ret;
     }
 
-    private function navigate(Schema $schema, array &$visited)
+    private function navigate(Schema $schema, array &$visited): void
     {
         if (isset($visited[spl_object_hash($schema)])) {
             return;
@@ -139,8 +136,12 @@ class YamlConverter extends AbstractConverter
         }
     }
 
-    private function visitTypeBase(&$class, &$data, Type $type, $name)
-    {
+    private function visitTypeBase(
+        array &$class,
+        array &$data,
+        Type $type,
+        ?string $name
+    ): void {
         if ($type instanceof BaseComplexType) {
             $this->visitBaseComplexType($class, $data, $type, $name);
         }
@@ -152,7 +153,7 @@ class YamlConverter extends AbstractConverter
         }
     }
 
-    public function &visitElementDef(Schema $schema, ElementDef $element)
+    public function &visitElementDef(Schema $schema, ElementDef $element): array
     {
         if (!isset($this->classes[spl_object_hash($element)])) {
             $className = $this->findPHPNamespace($element)
@@ -202,7 +203,7 @@ class YamlConverter extends AbstractConverter
         return $this->classes[spl_object_hash($element)]['class'];
     }
 
-    private function findPHPNamespace(SchemaItem $item)
+    private function findPHPNamespace(SchemaItem $item): string
     {
         $schema = $item->getSchema();
 
@@ -216,7 +217,7 @@ class YamlConverter extends AbstractConverter
         return $this->namespaces[$schema->getTargetNamespace()];
     }
 
-    private function findPHPName(Type $type)
+    private function findPHPName(Type $type): string
     {
         $schema = $type->getSchema();
 
@@ -230,7 +231,7 @@ class YamlConverter extends AbstractConverter
         return $ns . '\\' . $name;
     }
 
-    public function &visitType(Type $type, $force = false)
+    public function &visitType(Type $type, bool $force = false)
     {
         $skip = in_array(
             $type->getSchema()->getTargetNamespace(),
@@ -281,15 +282,11 @@ class YamlConverter extends AbstractConverter
         return $this->classes[spl_object_hash($type)]['class'];
     }
 
-    /**
-     * @param Type   $type
-     * @param string $parentName
-     * @param string $parentClass
-     *
-     * @return array
-     */
-    private function &visitTypeAnonymous(Type $type, $parentName, $parentClass)
-    {
+    private function &visitTypeAnonymous(
+        Type $type,
+        ?string $parentName,
+        ?string $parentClass
+    ): array {
         if (!isset($this->classes[spl_object_hash($type)])) {
             $class = [];
             $data = [];
@@ -308,7 +305,7 @@ class YamlConverter extends AbstractConverter
         return $this->classes[spl_object_hash($type)]['class'];
     }
 
-    private function visitComplexType(&$class, &$data, ComplexType $type)
+    private function visitComplexType(&$class, &$data, ComplexType $type): void
     {
         $schema = $type->getSchema();
         if (!isset($data['properties'])) {
@@ -321,8 +318,12 @@ class YamlConverter extends AbstractConverter
         }
     }
 
-    private function visitSimpleType(&$class, &$data, SimpleType $type, $name)
-    {
+    private function visitSimpleType(
+        &$class,
+        &$data,
+        SimpleType $type,
+        ?string $name
+    ): void {
         if ($restriction = $type->getRestriction()) {
             $parent = $restriction->getBase();
             if ($parent instanceof Type) {
@@ -336,8 +337,12 @@ class YamlConverter extends AbstractConverter
         }
     }
 
-    private function visitBaseComplexType(&$class, &$data, BaseComplexType $type, $name)
-    {
+    private function visitBaseComplexType(
+        array &$class,
+        array &$data,
+        BaseComplexType $type,
+        ?string $name
+    ): void {
         $parent = $type->getParent();
         if ($parent) {
             $parentType = $parent->getBase();
@@ -357,8 +362,12 @@ class YamlConverter extends AbstractConverter
         }
     }
 
-    private function handleClassExtension(&$class, &$data, Type $type, $parentName)
-    {
+    private function handleClassExtension(
+        array &$class,
+        array &$data,
+        Type $type,
+        ?string $parentName
+    ): void {
         if ($alias = $this->getTypeAlias($type)) {
             $property = [];
             $property['expose'] = true;
@@ -397,8 +406,11 @@ class YamlConverter extends AbstractConverter
         }
     }
 
-    private function visitAttribute(&$class, Schema $schema, AttributeItem $attribute)
-    {
+    private function visitAttribute(
+        array &$class,
+        Schema $schema,
+        AttributeItem $attribute
+    ): array {
         $property = [];
         $property['expose'] = true;
         $property['access_type'] = 'public_method';
@@ -439,7 +451,10 @@ class YamlConverter extends AbstractConverter
         return $property;
     }
 
-    private function typeHasValue(Type $type, $parentClass, $name)
+    /**
+     * @return mixed
+     */
+    private function typeHasValue(Type $type, array $parentClass, ?string $name)
     {
         do {
             if (!($type instanceof SimpleType)) {
@@ -468,20 +483,12 @@ class YamlConverter extends AbstractConverter
         return false;
     }
 
-    /**
-     * @param array       $class
-     * @param Schema      $schema
-     * @param ElementItem $element
-     * @param bool        $arrayize
-     *
-     * @return array
-     */
     private function visitElement(
-        &$class,
+        array &$class,
         Schema $schema,
         ElementItem $element,
-        $arrayize = true
-    ) {
+        bool $arrayize = true
+    ): array {
         $property = [];
         $property['expose'] = true;
         $property['access_type'] = 'public_method';
@@ -593,7 +600,7 @@ class YamlConverter extends AbstractConverter
         return $property;
     }
 
-    private function findPHPClass(&$class, Item $node)
+    private function findPHPClass(array &$class, Item $node): string
     {
         $type = $node->getType();
 

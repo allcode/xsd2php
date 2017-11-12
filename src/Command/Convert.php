@@ -9,18 +9,18 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class Convert extends Command
 {
     /**
-     * @var ContainerInterface
+     * @var ContainerBuilder
      */
     protected $container;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerBuilder $container)
     {
         $this->container = $container;
         parent::__construct();
@@ -64,7 +64,7 @@ class Convert extends Command
         return count($items) ? 0 : 255;
     }
 
-    protected function loadConfigurations($configFile)
+    protected function loadConfigurations(string $configFile)
     {
         $locator = new FileLocator('.');
         $yaml = new YamlFileLoader($this->container, $locator);

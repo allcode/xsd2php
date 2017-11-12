@@ -4,5 +4,5 @@ namespace GoetasWebservices\Xsd\XsdToPhp\Writer;
 
 abstract class Writer
 {
-    abstract public function write(array $items);
+    abstract public function write(array $items): void;
 }

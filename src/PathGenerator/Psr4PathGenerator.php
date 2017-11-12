@@ -4,6 +4,9 @@ namespace GoetasWebservices\Xsd\XsdToPhp\PathGenerator;
 
 abstract class Psr4PathGenerator
 {
+    /**
+     * @var array|string[]
+     */
     protected $namespaces = [];
 
     public function __construct(array $targets = [])
@@ -11,7 +14,7 @@ abstract class Psr4PathGenerator
         $this->setTargets($targets);
     }
 
-    public function setTargets($namespaces)
+    public function setTargets(array $namespaces): void
     {
         $this->namespaces = $namespaces;
 

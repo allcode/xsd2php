@@ -6,5 +6,5 @@ use Zend\Code\Generator\ClassGenerator;
 
 interface PathGenerator
 {
-    public function getPath(ClassGenerator $php);
+    public function getPath(ClassGenerator $php): string;
 }
