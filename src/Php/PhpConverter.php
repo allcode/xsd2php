@@ -31,41 +31,12 @@ class PhpConverter extends AbstractConverter
     ) {
         parent::__construct($namingStrategy, $loggerInterface);
 
-        $this->addAliasMap(
-            'http://www.w3.org/2001/XMLSchema',
-            'dateTime',
-            function (Type $type) {
-                return 'DateTime';
-            }
-        );
-        $this->addAliasMap(
-            'http://www.w3.org/2001/XMLSchema',
-            'time',
-            function (Type $type) {
-                return 'DateTime';
-            }
-        );
-        $this->addAliasMap(
-            'http://www.w3.org/2001/XMLSchema',
-            'date',
-            function (Type $type) {
-                return 'DateTime';
-            }
-        );
-        $this->addAliasMap(
-            'http://www.w3.org/2001/XMLSchema',
-            'anySimpleType',
-            function (Type $type) {
-                return 'mixed';
-            }
-        );
-        $this->addAliasMap(
-            'http://www.w3.org/2001/XMLSchema',
-            'anyType',
-            function (Type $type) {
-                return 'mixed';
-            }
-        );
+        $ns = 'http://www.w3.org/2001/XMLSchema';
+        $typeMap = [
+            'DateTime' => ['dateTime', 'time', 'date'],
+            'mixed' => ['anySimpleType', 'anyType'],
+        ];
+        $this->addAliasMapTypesFromArray($ns, $typeMap);
     }
 
     private $classes = [];
