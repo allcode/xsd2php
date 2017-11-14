@@ -38,20 +38,6 @@ class ClassGenerator
         return true;
     }
 
-    private function isNativeType(PHPClass $class): bool
-    {
-        return !$class->getNamespace() && in_array($class->getName(), [
-                'string',
-                'int',
-                'float',
-                'integer',
-                'boolean',
-                'array',
-                'mixed',
-                'callable',
-            ]);
-    }
-
     private function handleValueMethod(
         ZendClassGenerator $generator,
         PHPProperty $prop,
