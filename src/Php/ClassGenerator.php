@@ -8,8 +8,8 @@ use GoetasWebservices\Xsd\XsdToPhp\Php\Structure\PHPClassOf;
 use GoetasWebservices\Xsd\XsdToPhp\Php\Structure\PHPProperty;
 use Zend\Code\Generator\ClassGenerator as ZendClassGenerator;
 use Zend\Code\Generator\DocBlock\Tag\ParamTag;
-use Zend\Code\Generator\DocBlock\Tag\PropertyTag;
 use Zend\Code\Generator\DocBlock\Tag\ReturnTag;
+use Zend\Code\Generator\DocBlock\Tag\VarTag;
 use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\ParameterGenerator;
@@ -359,7 +359,7 @@ class ClassGenerator
         if ($prop->getDoc()) {
             $docBlock->setLongDescription($prop->getDoc());
         }
-        $tag = new PropertyTag($prop->getName(), 'mixed');
+        $tag = new VarTag(null, 'mixed');
 
         $type = $prop->getType();
 
