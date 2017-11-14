@@ -134,8 +134,8 @@ class ClassGenerator
             $docblock->setLongDescription($prop->getDoc());
         }
 
-        $patramTag = new ParamTag($prop->getName());
-        $docblock->setTag($patramTag);
+        $paramTag = new ParamTag($prop->getName());
+        $docblock->setTag($paramTag);
 
         $return = new ReturnTag('self');
         $docblock->setTag($return);
@@ -144,34 +144,34 @@ class ClassGenerator
 
         $method = new MethodGenerator('set' . Inflector::classify($prop->getName()));
 
-        $parameter = new ParameterGenerator($prop->getName(), 'mixed');
+        $parameter = new ParameterGenerator($prop->getName());
 
         if ($type && $type instanceof PHPClassOf) {
-            $patramTag->setTypes($type->getArg()
+            $paramTag->setTypes($type->getArg()
                     ->getType()->getPhpType() . '[]');
             $parameter->setType('array');
 
             if ($p = $type->getArg()->getType()->isSimpleType()
             ) {
                 if (($t = $p->getType())) {
-                    $patramTag->setTypes($t->getPhpType());
+                    $paramTag->setTypes($t->getPhpType());
                 }
             }
         } elseif ($type) {
             if ($type->isNativeType()) {
-                $patramTag->setTypes($type->getPhpType());
+                $paramTag->setTypes($type->getPhpType());
             } elseif ($p = $type->isSimpleType()) {
                 if (($t = $p->getType()) && !$t->isNativeType()) {
-                    $patramTag->setTypes($t->getPhpType());
+                    $paramTag->setTypes($t->getPhpType());
                     $parameter->setType($t->getPhpType());
                 } elseif ($t && !$t->isNativeType()) {
-                    $patramTag->setTypes($t->getPhpType());
+                    $paramTag->setTypes($t->getPhpType());
                     $parameter->setType($t->getPhpType());
                 } elseif ($t) {
-                    $patramTag->setTypes($t->getPhpType());
+                    $paramTag->setTypes($t->getPhpType());
                 }
             } else {
-                $patramTag->setTypes($type->getPhpType());
+                $paramTag->setTypes($type->getPhpType());
                 $parameter->setType($type->getPhpType());
             }
         }
@@ -197,12 +197,12 @@ class ClassGenerator
                 $docblock->setLongDescription($prop->getDoc());
             }
 
-            $patramTag = new ParamTag('index', 'scalar');
-            $docblock->setTag($patramTag);
+            $paramTag = new ParamTag('index', 'scalar');
+            $docblock->setTag($paramTag);
 
             $docblock->setTag(new ReturnTag('boolean'));
 
-            $paramIndex = new ParameterGenerator('index', 'mixed');
+            $paramIndex = new ParameterGenerator('index');
 
             $method = new MethodGenerator('isset' . Inflector::classify($prop->getName()),
                 [$paramIndex]);
@@ -216,9 +216,9 @@ class ClassGenerator
                 $docblock->setLongDescription($prop->getDoc());
             }
 
-            $patramTag = new ParamTag('index', 'scalar');
-            $docblock->setTag($patramTag);
-            $paramIndex = new ParameterGenerator('index', 'mixed');
+            $paramTag = new ParamTag('index', 'scalar');
+            $docblock->setTag($paramTag);
+            $paramIndex = new ParameterGenerator('index');
 
             $docblock->setTag(new ReturnTag('void'));
 
@@ -285,8 +285,8 @@ class ClassGenerator
         $return->setTypes('self');
         $docblock->setTag($return);
 
-        $patramTag = new ParamTag($propName, $type->getArg()->getType()->getPhpType());
-        $docblock->setTag($patramTag);
+        $paramTag = new ParamTag($propName, $type->getArg()->getType()->getPhpType());
+        $docblock->setTag($paramTag);
 
         $method = new MethodGenerator('addTo' . Inflector::classify($prop->getName()));
 
@@ -296,7 +296,7 @@ class ClassGenerator
         if (!$tt->isNativeType()) {
             if ($p = $tt->isSimpleType()) {
                 if (($t = $p->getType())) {
-                    $patramTag->setTypes($t->getPhpType());
+                    $paramTag->setTypes($t->getPhpType());
 
                     if (!$t->isNativeType()) {
                         $parameter->setType($t->getPhpType());
@@ -382,24 +382,14 @@ class ClassGenerator
         }
         $class->setNamespaceName($type->getNamespace() ?: null);
         $class->setName($type->getName());
-        $class->setDocblock($docblock);
+        $class->setDocBlock($docblock);
 
         if ($extends = $type->getExtends()) {
             if ($p = $extends->isSimpleType()) {
                 $this->handleProperty($class, $p);
                 $this->handleValueMethod($class, $p, $extends);
             } else {
-                $class->setExtendedClass($extends->getName());
-
-                if ($extends->getNamespace() != $type->getNamespace()) {
-                    if ($extends->getName() == $type->getName()) {
-                        $class->addUse($type->getExtends()
-                            ->getFullName(), $extends->getName() . 'Base');
-                        $class->setExtendedClass($extends->getName() . 'Base');
-                    } else {
-                        $class->addUse($extends->getFullName());
-                    }
-                }
+                $class->setExtendedClass($extends->getFullName());
             }
         }
 

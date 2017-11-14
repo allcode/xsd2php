@@ -25,7 +25,7 @@
 
     "goetas-webservices/xsd-reader": "^0.2",
     "doctrine/inflector": "^1.0",
-    "zendframework/zend-code": "~2.3",
+    "zendframework/zend-code": "^3.3",
 
     "psr/log": "^1.0"
   },
