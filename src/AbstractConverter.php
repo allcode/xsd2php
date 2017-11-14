@@ -84,7 +84,7 @@ abstract class AbstractConverter
 
         $ns = 'http://www.w3.org/2001/XMLSchema';
         $typeMap = [
-            'integer' => [
+            'int' => [
                 'gYearMonth',
                 'gMonthDay',
                 'gMonth',
@@ -117,7 +117,7 @@ abstract class AbstractConverter
                 'NMTOKENS',
             ],
             'float' => ['decimal', 'float', 'double'],
-            'boolean' => ['boolean'],
+            'bool' => ['boolean'],
             'DateInterval' => ['duration'],
         ];
         $this->addAliasMapTypesFromArray($ns, $typeMap);
