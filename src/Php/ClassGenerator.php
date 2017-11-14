@@ -14,6 +14,7 @@ use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\ParameterGenerator;
 use Zend\Code\Generator\PropertyGenerator;
+use Zend\Code\Generator\PropertyValueGenerator;
 
 class ClassGenerator
 {
@@ -349,10 +350,6 @@ class ClassGenerator
 
         $class->addPropertyFromGenerator($generatedProp);
 
-        if ($prop->getType() && (!$prop->getType()->getNamespace() && $prop->getType()->getName() == 'array')) {
-            // $generatedProp->setDefaultValue(array(), PropertyValueGenerator::TYPE_AUTO, PropertyValueGenerator::OUTPUT_SINGLE_LINE);
-        }
-
         $docBlock = new DocBlockGenerator();
         $generatedProp->setDocBlock($docBlock);
 
@@ -371,7 +368,17 @@ class ClassGenerator
                     $tag->setTypes($t->getPhpType() . '[]');
                 }
             }
-            $generatedProp->setDefaultValue($type->getArg()->getDefault());
+            $defaultValue = $type->getArg()->getDefault();
+            $generatedProp->setDefaultValue(
+                $defaultValue,
+                PropertyValueGenerator::TYPE_AUTO,
+                PropertyValueGenerator::OUTPUT_SINGLE_LINE
+            );
+            if (!empty($defaultValue) && $this->isLongPropertyDefaultValue($generatedProp)) {
+                $generatedProp
+                    ->getDefaultValue()
+                    ->setOutputMode(PropertyValueGenerator::OUTPUT_MULTIPLE_LINE);
+            }
         } elseif ($type) {
             if ($type->isNativeType()) {
                 $tag->setTypes($type->getPhpType());
@@ -409,5 +416,13 @@ class ClassGenerator
         }
 
         return null;
+    }
+
+    private function isLongPropertyDefaultValue(
+        PropertyGenerator $propertyGenerator
+    ): bool {
+        $property = array_pop(explode("\n", $propertyGenerator->generate()));
+
+        return strlen($property) > 80;
     }
 }
