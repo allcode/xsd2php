@@ -66,7 +66,7 @@ class ClassGenerator
         $docblock->setTag($paramTag);
 
         $param = new ParameterGenerator('value');
-        if ($type && !$type->isNativeType()) {
+        if ($type && $type->getPhpType() !== 'mixed') {
             $param->setType($type->getPhpType());
         }
         $method = new MethodGenerator('__construct', [
@@ -98,7 +98,7 @@ class ClassGenerator
         $param = new ParameterGenerator('value');
         $param->setDefaultValue(null);
 
-        if ($type && !$type->isNativeType()) {
+        if ($type && $type->getPhpType() !== 'mixed') {
             $param->setType($type->getPhpType());
         }
         $method = new MethodGenerator('value', []);
@@ -160,6 +160,9 @@ class ClassGenerator
         } elseif ($type) {
             if ($type->isNativeType()) {
                 $paramTag->setTypes($type->getPhpType());
+                if ($type->getPhpType() !== 'mixed') {
+                    $parameter->setType($type->getPhpType());
+                }
             } elseif ($p = $type->isSimpleType()) {
                 if (($t = $p->getType()) && !$t->isNativeType()) {
                     $paramTag->setTypes($t->getPhpType());
@@ -197,17 +200,20 @@ class ClassGenerator
                 $docblock->setLongDescription($prop->getDoc());
             }
 
-            $paramTag = new ParamTag('index', 'scalar');
+            $paramTag = new ParamTag('index', 'string|int');
             $docblock->setTag($paramTag);
 
             $docblock->setTag(new ReturnTag('boolean'));
 
             $paramIndex = new ParameterGenerator('index');
 
-            $method = new MethodGenerator('isset' . Inflector::classify($prop->getName()),
-                [$paramIndex]);
+            $method = new MethodGenerator(
+                'isset' . Inflector::classify($prop->getName()),
+                [$paramIndex]
+            );
             $method->setDocBlock($docblock);
             $method->setBody('return isset($this->' . $prop->getName() . '[$index]);');
+            $method->setReturnType('bool');
             $generator->addMethodFromGenerator($method);
 
             $docblock = new DocBlockGenerator();
@@ -216,7 +222,7 @@ class ClassGenerator
                 $docblock->setLongDescription($prop->getDoc());
             }
 
-            $paramTag = new ParamTag('index', 'scalar');
+            $paramTag = new ParamTag('index', 'string|int');
             $docblock->setTag($paramTag);
             $paramIndex = new ParameterGenerator('index');
 
@@ -226,6 +232,7 @@ class ClassGenerator
                 [$paramIndex]);
             $method->setDocBlock($docblock);
             $method->setBody('unset($this->' . $prop->getName() . '[$index]);');
+            $method->setReturnType('void');
             $generator->addMethodFromGenerator($method);
         }
 
@@ -262,6 +269,9 @@ class ClassGenerator
         $method = new MethodGenerator('get' . Inflector::classify($prop->getName()));
         $method->setDocBlock($docblock);
         $method->setBody('return $this->' . $prop->getName() . ';');
+        if ($type && $type->getPhpType() !== 'mixed') {
+            $method->setReturnType('?' . $type->getPhpType());
+        }
 
         $generator->addMethodFromGenerator($method);
     }
@@ -272,6 +282,7 @@ class ClassGenerator
         PHPClass $class
     ): void {
         $type = $prop->getType();
+        assert($type instanceof PHPClassOf);
         $propName = $type->getArg()->getName();
 
         $docblock = new DocBlockGenerator();
@@ -298,7 +309,7 @@ class ClassGenerator
                 if (($t = $p->getType())) {
                     $paramTag->setTypes($t->getPhpType());
 
-                    if (!$t->isNativeType()) {
+                    if ($t->getPhpType() !== 'mixed') {
                         $parameter->setType($t->getPhpType());
                     }
                 }
@@ -312,7 +323,7 @@ class ClassGenerator
         $method->setBody($methodBody);
         $method->setDocBlock($docblock);
         $method->setParameter($parameter);
-
+        $method->setReturnType($class->getFullName());
         $generator->addMethodFromGenerator($method);
     }
 
